@@ -11,6 +11,8 @@ import Foundation
 
 class CustomAnimatedTransitionProtocol: NSObject, UIViewControllerAnimatedTransitioning {
     
+    var blurEffectView = UIVisualEffectView(frame: .zero)
+    
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 2.5
     }
@@ -36,11 +38,14 @@ class CustomAnimatedTransitionProtocol: NSObject, UIViewControllerAnimatedTransi
             let bounds = UIScreen.main.bounds
             
             toViewController.view.frame = finalFrameForVc.offsetBy(dx: 0, dy: bounds.size.height)
+            self.blurEffectView.frame = bounds
             
+            containerView.addSubview(self.blurEffectView)
             containerView.addSubview(toViewController.view)
             
-            UIView.animate(withDuration: transitionDuration(using: transitionContext), delay: 0.2, animations: {
+            UIView.animate(withDuration: self.transitionDuration(using: transitionContext), delay: 0.2, animations: {
                 
+                self.blurEffectView.effect = UIBlurEffect(style: .light)
                 fromViewController.view.alpha = 0.5
                 toViewController.view.frame = finalFrameForVc
                 
@@ -59,8 +64,9 @@ class CustomAnimatedTransitionProtocol: NSObject, UIViewControllerAnimatedTransi
             
             let bounds = UIScreen.main.bounds
             
-            UIView.animate(withDuration: 0.5, animations: {
+            UIView.animate(withDuration: self.transitionDuration(using: transitionContext), animations: {
                 
+                self.blurEffectView.effect = nil
                 fromViewController.view.frame = finalFrameForVc.offsetBy(dx: 0, dy: bounds.size.height)
                 toViewController.view.alpha = 1
                 
